@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 빌더사운드 마니또 선발대회</title>
+<style>
+    body { 
+        font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; 
+        background-color: #f4f7f6; 
+        color: #333; 
+        text-align: center; 
+        padding: 20px; 
+        margin: 0;
+    }
+    .container { 
+        max-width: 700px; 
+        margin: 40px auto; 
+        background: white; 
+        padding: 40px; 
+        border-radius: 15px; 
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08); 
+    }
+    h1 { color: #2c3e50; font-size: 28px; margin-bottom: 30px; }
+    h2 { color: #34495e; }
+    .screen { display: none; animation: fadeIn 0.3s; }
+    .screen.active { display: block; }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    
+    .input-group { margin-bottom: 20px; text-align: left; }
+    .input-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
+    .input-group input, .input-group textarea { 
+        width: 100%; 
+        padding: 12px; 
+        border: 1px solid #ced4da; 
+        border-radius: 8px; 
+        box-sizing: border-box; 
+        font-size: 15px;
+        font-family: inherit;
+    }
+    
+    .btn { 
+        padding: 12px 24px; 
+        border: none; 
+        border-radius: 8px; 
+        background: #3498db; 
+        color: white; 
+        font-size: 16px; 
+        font-weight: bold;
+        cursor: pointer; 
+        transition: background 0.3s, transform 0.1s; 
+        margin: 5px; 
+    }
+    .btn:hover { background: #2980b9; transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+    
+    .btn-reset { background: #e74c3c; font-size: 14px; padding: 8px 16px; }
+    .btn-reset:hover { background: #c0392b; }
+    
+    .grid-3x3 { 
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 15px; 
+        margin-top: 30px; 
+    }
+    .name-btn { 
+        padding: 40px 10px; 
+        font-size: 24px; 
+        font-weight: bold; 
+        border: 2px solid #3498db; 
+        background: white; 
+        color: #3498db; 
+        border-radius: 12px; 
+        cursor: pointer; 
+        transition: all 0.2s; 
+        word-break: keep-all;
+    }
+    .name-btn:hover:not(:disabled) { 
+        background: #3498db; 
+        color: white; 
+        transform: scale(1.05);
+    }
+    .name-btn:disabled { 
+        background: #ecf0f1; 
+        border-color: #bdc3c7; 
+        color: #95a5a6; 
+        cursor: not-allowed; 
+        transform: scale(0.95);
+    }
+    
+    .result-card { 
+        background: #fff8e1; 
+        border: 2px solid #ffe082; 
+        padding: 40px 20px; 
+        border-radius: 15px; 
+        margin-top: 30px; 
+        margin-bottom: 30px;
+    }
+    .mission-text { 
+        font-size: 20px; 
+        color: #d35400; 
+        font-weight: bold; 
+        margin-top: 20px; 
+        padding: 20px;
+        background: rgba(255,255,255,0.7);
+        border-radius: 10px;
+        line-height: 1.5;
+    }
+    
+    .admin-link { 
+        margin-top: 40px; 
+        font-size: 14px; 
+        color: #95a5a6; 
+        cursor: pointer; 
+        text-decoration: underline; 
+    }
+    .admin-link:hover { color: #7f8c8d; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 30px; text-align: left; }
+    th, td { border: 1px solid #ddd; padding: 12px; }
+    th { background-color: #f8f9fa; font-weight: bold; color: #333; }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Screen 1: Setup -->
+    <div id="screen1" class="screen active">
+        <h1>🎙️ 2026 빌더사운드 마니또 선발대회</h1>
+        <div class="input-group">
+            <label>총 참여 인원 수</label>
+            <input type="number" id="numParticipants" value="9" min="2">
+        </div>
+        <div class="input-group">
+            <label>참여자 이름 (쉼표로 구분)</label>
+            <textarea id="namesInput" rows="3">뚜기, 빌더, 헐랭, 구레, 똘래, 태호, 달봉, 뚱스, 너굴</textarea>
+        </div>
+        <div class="input-group">
+            <label>미션 목록 (엔터로 구분, 최소 참여 인원 수 이상)</label>
+            <textarea id="missionsInput" rows="6" placeholder="여기에 구글 시트의 B2:B51 복사한 내용을 붙여넣으세요.">
+미션 1: 몰래 커피 사주기
+미션 2: 칭찬 3번 하기
+미션 3: 자리에 간식 두고 오기
+미션 4: 우연히 마주치면 하이파이브 하기
+미션 5: 따뜻한 익명 쪽지 남기기
+미션 6: 취향을 알아내서 소소한 선물하기
+미션 7: 일 도와주기
+미션 8: 마니또 웃게 만들기
+미션 9: 마니또 칭찬을 다른 사람에게 흘리기
+미션 10: 구글 시트에 작성한 미션을 복사해서 여기에 붙여넣으세요! (최소 9개 이상 필요)
+            </textarea>
+            <small style="color:#7f8c8d; margin-top:5px; display:block;">* 공유해주신 구글 스프레드시트의 B열(미션)을 그대로 드래그하여 복사하신 후, 위 칸에 붙여넣기 하시면 적용됩니다.</small>
+        </div>
+        <button class="btn" style="width:100%; margin: 20px 0 10px 0; padding:15px; font-size:18px;" onclick="startGame()">🚀 게임 시작하기</button>
+        <button class="btn btn-reset" style="width:100%; padding:10px;" onclick="resetGame()">초기화 (새로고침)</button>
+    </div>
+
+    <!-- Screen 2: Selection -->
+    <div id="screen2" class="screen">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin:0;">당신은 누구십니까?</h2>
+            <button class="btn-reset" style="border:none; border-radius:5px; color:white; cursor:pointer;" onclick="resetGame()">🔄 전체 리셋</button>
+        </div>
+        <p style="font-size: 18px; color: #555;">자신의 이름을 찾아 클릭하세요.</p>
+        <div id="nameGrid" class="grid-3x3"></div>
+        <div class="admin-link" onclick="showAdminLogin()">비밀 관리자 페이지 (결과 보기)</div>
+    </div>
+
+    <!-- Screen 3: Result -->
+    <div id="screen3" class="screen">
+        <h2>당신의 마니또는...</h2>
+        <div class="result-card">
+            <h1 id="resultTarget" style="color:#e74c3c; font-size:50px; margin:10px 0;"></h1>
+            <p style="font-size:24px; font-weight:bold; color:#333;">입니다!</p>
+            <div class="mission-text">
+                <span style="font-size:16px; color:#7f8c8d;">[비밀 미션]</span><br><br>
+                <span id="resultMission" style="color:#e67e22; font-size:24px;"></span>
+            </div>
+        </div>
+        <button class="btn" style="width:100%; padding:20px; font-size:20px; background-color:#2ecc71;" onclick="closeResult()">✔️ 확인 후 닫기 (절대 비밀 유지!)</button>
+    </div>
+
+    <!-- Screen 4: Admin Login -->
+    <div id="screen4" class="screen">
+        <h2>🔒 관리자 페이지</h2>
+        <p>게임 시작 날짜 6자리를 입력하세요 (예: 오늘 날짜)</p>
+        <div class="input-group" style="max-width: 300px; margin: 20px auto;">
+            <input type="password" id="adminPw" placeholder="비밀번호 6자리" style="text-align:center; font-size:20px; letter-spacing:5px;">
+        </div>
+        <button class="btn" onclick="checkAdmin()">확인</button>
+        <button class="btn btn-reset" onclick="showScreen('screen2')">돌아가기</button>
+    </div>
+
+    <!-- Screen 5: Admin Dashboard -->
+    <div id="screen5" class="screen">
+        <h2>📊 마니또 결과 (관리자용)</h2>
+        <p style="color:#e74c3c; font-weight:bold;">※ 참가자들에게 절대 유출 금지!</p>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:20%;">뽑은 사람</th>
+                    <th style="width:20%;">마니또 대상</th>
+                    <th style="width:60%;">배정된 미션</th>
+                </tr>
+            </thead>
+            <tbody id="adminTableBody">
+            </tbody>
+        </table>
+        <br><br>
+        <button class="btn btn-reset" onclick="resetGame()">게임 초기화하고 처음으로</button>
+        <button class="btn" style="background:#95a5a6;" onclick="showScreen('screen2')">선택 화면으로 돌아가기</button>
+    </div>
+</div>
+
+<script>
+    let participants = [];
+    let missions = [];
+    let manitoMap = {}; 
+    let missionMap = {}; 
+    let selectedPickers = new Set();
+    let adminPassword = "";
+
+    function init() {
+        const today = new Date();
+        const yy = String(today.getFullYear()).slice(-2);
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        adminPassword = yy + mm + dd; 
+    }
+
+    function startGame() {
+        const count = parseInt(document.getElementById('numParticipants').value);
+        const namesRaw = document.getElementById('namesInput').value;
+        const missionsRaw = document.getElementById('missionsInput').value;
+        
+        participants = namesRaw.split(',').map(s => s.trim()).filter(s => s !== "");
+        if(participants.length !== count) {
+            alert(`참석자 수(${count}명)와 입력된 이름의 수(${participants.length}명)가 다릅니다. 확인해주세요.`);
+            return;
+        }
+        
+        let allMissions = missionsRaw.split('\n').map(s => s.trim()).filter(s => s !== "");
+        if(allMissions.length < count) {
+            alert(`미션의 수(${allMissions.length}개)가 참석자 수(${count}명)보다 적습니다. 미션을 더 추가해주세요.`);
+            return;
+        }
+        
+        // 1. Manito Assignment (Derangement - 자기 자신을 뽑지 않도록 섞기)
+        let targets = [...participants];
+        let valid = false;
+        while(!valid) {
+            // Fisher-Yates Shuffle
+            for (let i = targets.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [targets[i], targets[j]] = [targets[j], targets[i]];
+            }
+            
+            // Check derangement
+            valid = true;
+            for (let i = 0; i < participants.length; i++) {
+                if (participants[i] === targets[i]) {
+                    valid = false;
+                    break;
+                }
+            }
+        }
+        
+        // 2. Mission Shuffle
+        for (let i = allMissions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allMissions[i], allMissions[j]] = [allMissions[j], allMissions[i]];
+        }
+        
+        // 3. Mapping
+        manitoMap = {};
+        missionMap = {};
+        selectedPickers = new Set();
+        
+        for(let i=0; i<participants.length; i++) {
+            manitoMap[participants[i]] = targets[i];
+            missionMap[participants[i]] = allMissions[i];
+        }
+        
+        renderSelectionGrid();
+        showScreen('screen2');
+    }
+
+    function renderSelectionGrid() {
+        const grid = document.getElementById('nameGrid');
+        grid.innerHTML = '';
+        participants.forEach(name => {
+            const btn = document.createElement('button');
+            btn.className = 'name-btn';
+            btn.innerText = name;
+            if(selectedPickers.has(name)) {
+                btn.disabled = true;
+            }
+            btn.onclick = () => selectName(name);
+            grid.appendChild(btn);
+        });
+    }
+
+    function selectName(name) {
+        if(!confirm(`당신은 [${name}]님이 맞습니까?\n맞으면 확인을, 다른 사람의 이름이면 취소를 눌러주세요.`)) return;
+        
+        selectedPickers.add(name);
+        
+        document.getElementById('resultTarget').innerText = manitoMap[name];
+        document.getElementById('resultMission').innerText = missionMap[name];
+        
+        showScreen('screen3');
+    }
+
+    function closeResult() {
+        renderSelectionGrid();
+        if(selectedPickers.size === participants.length) {
+            setTimeout(() => {
+                alert("🎉 모든 인원의 마니또 선발이 완료되었습니다!");
+            }, 100);
+        }
+        showScreen('screen2');
+    }
+
+    function showAdminLogin() {
+        document.getElementById('adminPw').value = '';
+        showScreen('screen4');
+    }
+
+    function checkAdmin() {
+        const pw = document.getElementById('adminPw').value;
+        if(pw === adminPassword) {
+            renderAdminDashboard();
+            showScreen('screen5');
+        } else {
+            alert('비밀번호가 틀렸습니다. (힌트: 게임 시작 날짜 6자리. 예: ' + adminPassword + ')');
+        }
+    }
+
+    function resetGame() {
+        if(confirm("정말로 초기화하시겠습니까? 지금까지의 매칭 결과가 모두 삭제됩니다.")) {
+            location.reload();
+        }
+    }
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
