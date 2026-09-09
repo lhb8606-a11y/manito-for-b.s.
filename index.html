@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>마니또 선발대회</title>
 <style>
-    body {  
+    body { 
         font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; 
         background-color: #f4f7f6; 
         color: #333; 
@@ -218,7 +218,7 @@
 
     @media (max-width: 600px) {
         .container { padding: 20px 15px; }
-        .name-btn { aspect-ratio: auto; padding: 25px 5px; } /* Adjust for small phones to not be too tall */
+        .name-btn { aspect-ratio: auto; padding: 25px 5px; }
     }
 </style>
 </head>
@@ -425,7 +425,7 @@
         setTimeout(() => {
             document.getElementById('intro').style.display = 'none';
             document.getElementById('mainContainer').style.display = 'block';
-            showScreen('step-count'); // Fix: Ensure the first screen is shown!
+            showScreen('step-count');
         }, 2500); // Intro lasts 2.5 seconds
     };
 
@@ -481,8 +481,8 @@
             return;
         }
 
-        // Fix: Removed multi-line template literal strings for better cross-browser JS compatibility
-        if(confirm("참석자 명단이 다음과 같습니다.\n[ " + namesStr + " ]\n맞습니까?")) {
+        // Fixed string formatting to prevent Javascript syntax errors
+        if(confirm(`참석자 명단이 다음과 같습니다.\n[ ${namesStr} ]\n맞습니까?`)) {
             showScreen('step-mission-type');
         }
     }
@@ -586,7 +586,7 @@
     }
 
     function selectName(name) {
-        if(!confirm("당신은 [" + name + "]님이 맞습니까?\n맞으면 확인을, 다른 사람의 이름이면 취소를 눌러주세요.")) return;
+        if(!confirm(`당신은 [${name}]님이 맞습니까?\n맞으면 확인을, 다른 사람의 이름이면 취소를 눌러주세요.`)) return;
         
         selectedPickers.add(name);
         
@@ -637,7 +637,7 @@
     }
 
     function hardReset() {
-        if(confirm("정말로 전체 초기화하시겠습니까?\n처음 인원수 설정 화면으로 돌아가며 모든 기록이 삭제됩니다.")) {
+        if(confirm(`정말로 전체 초기화하시겠습니까?\n처음 인원수 설정 화면으로 돌아가며 모든 기록이 삭제됩니다.`)) {
             location.reload();
         }
     }
